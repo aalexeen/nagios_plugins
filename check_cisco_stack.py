@@ -112,6 +112,17 @@ def usage():
 # parse_args() - parses command line args and returns options dict
 #
 ###############################################################
+parser = argparse.ArgumentParser()
+
+#parser.add_argument("-h", "--help", dest='help', default='pass', help="User password")
+#parser.add_argument('--cmd', dest='cmd', help="Command to run")
+#parser.add_argument('--ipfile', dest='ipfile', help="Command to get files with IPs")
+#parser.add_argument('--host', dest='host', default='localhost', help='Host to connect to')
+#parser.add_argument('--port', dest='port', default=22, help="Port to connect on", type=int)
+#parser.add_argument('-u', dest='user', default='user', help="User name to authenticate as")
+#parser.add_argument('--tftp', dest='tftp', default='10.35.0.106', help="tftp server address")
+
+
 def parse_args():
     options = dict([
         ('remote_ip', None),
@@ -330,11 +341,13 @@ def evaluate_results(stack, ring):
 #
 ###############################################################
 def main():
-    options = parse_args()
-    stack = get_stack_info(options['remote_ip'], options['community'])
-    ring = get_ring_status(options['remote_ip'], options['community'])
-    result, message = evaluate_results(stack, ring)
-    plugin_exit(result, message)
+    #print("test")
+    args = parser.parse_args()
+    #options = parse_args()
+    #stack = get_stack_info(options['remote_ip'], options['community'])
+    #ring = get_ring_status(options['remote_ip'], options['community'])
+    #result, message = evaluate_results(stack, ring)
+    #plugin_exit(result, message)
 
 
 if __name__ == "__main__":
