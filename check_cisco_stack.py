@@ -64,6 +64,9 @@ from easysnmp import Session  # Requires easysnmp compiled with python bindings
 import sys       # exit
 import getopt    # for parsing options
 import logging   # for debug option
+
+# https://docs.python.org/3/howto/argparse.html
+# https://docs.python.org/3/library/argparse.html#module-argparse
 import argparse  # for parsing options
 
 # Global program variables
@@ -115,6 +118,41 @@ def usage():
 parser = argparse.ArgumentParser()
 
 #parser.add_argument("-h", "--help", dest='help', default='pass', help="User password")
+#parser.add_argument('--cmd', dest='cmd', help="Command to run")
+subparser_particular = parser.add_subparsers(title='switch subcommands',
+                                   description='particular switch number subcommands',
+                                   help='switch subcommands help')
+parser_particular = subparser_particular.add_parser('part', aliases=['particular', 'partial'])
+parser_particular.add_argument('-S', '--switchnumbers',
+                               dest='switchnumbers',
+                               choices=range(1, 9),
+                               required=True,
+                               action='extend',
+                               nargs='+',
+                               type=int)
+
+parser_particular.add_argument('-E', '--expectedstate',
+                               dest='expectedstate',
+                               choices=range(1, 12),
+                               required=True,
+                               action='extend',
+                               nargs='+',
+                               type=int)
+
+parser_particular.add_argument('-T', '-test', dest='test', action='store_true')
+parser_particular.add_argument('-tS', '--tswitchnumbers',
+                               dest='tswitchnumbers',
+                               choices=range(1, 9),
+                               action='extend',
+                               nargs='+',
+                               type=int)
+parser_particular.add_argument('-tE', '--texpectedstate',
+                               dest='texpectedstate',
+                               choices=range(1, 12),
+                               action='extend',
+                               nargs='+',
+                               type=int
+                               )
 #parser.add_argument('--cmd', dest='cmd', help="Command to run")
 #parser.add_argument('--ipfile', dest='ipfile', help="Command to get files with IPs")
 #parser.add_argument('--host', dest='host', default='localhost', help='Host to connect to')
@@ -348,6 +386,7 @@ def main():
     #ring = get_ring_status(options['remote_ip'], options['community'])
     #result, message = evaluate_results(stack, ring)
     #plugin_exit(result, message)
+    print(args)
 
 
 if __name__ == "__main__":
