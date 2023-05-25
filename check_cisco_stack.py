@@ -119,9 +119,16 @@ parser = argparse.ArgumentParser()
 
 #parser.add_argument("-h", "--help", dest='help', default='pass', help="User password")
 #parser.add_argument('--cmd', dest='cmd', help="Command to run")
+parser.add_argument("-H", "--host", dest="host", required=True,
+                    help="- IP address of the cisco stack")
+parser.add_argument("-c", "--community", dest="community", default="Public",
+                    help="- SNMP community string")
+parser.add_argument("-d", "--debug", action="store_true")
+parser.add_argument("-v", "--version", action="store_true")
+
 subparser_particular = parser.add_subparsers(title='switch subcommands',
                                    description='particular switch number subcommands',
-                                   help='switch subcommands help')
+                                   help='part --help for more details')
 parser_particular = subparser_particular.add_parser('part', aliases=['particular', 'partial'])
 parser_particular.add_argument('-S', '--switchnumbers',
                                dest='switchnumbers',
@@ -129,30 +136,34 @@ parser_particular.add_argument('-S', '--switchnumbers',
                                required=True,
                                action='extend',
                                nargs='+',
-                               type=int)
+                               type=int,
+                               help='- Switch number(s) in stack, range from 1 to 8')
 
 parser_particular.add_argument('-E', '--expectedstate',
                                dest='expectedstate',
-                               choices=range(1, 12),
+                               choices=range(1, 11),
                                required=True,
                                action='extend',
                                nargs='+',
-                               type=int)
+                               type=int,
+                               help='- Expected status of the switch number(s) accordingly, from 1 to 12')
 
-parser_particular.add_argument('-T', '-test', dest='test', action='store_true')
+parser_particular.add_argument('-T', '-test', dest='test', action='store_true',
+                               help='- Data for testing')
 parser_particular.add_argument('-tS', '--tswitchnumbers',
                                dest='tswitchnumbers',
                                choices=range(1, 9),
                                action='extend',
                                nargs='+',
-                               type=int)
+                               type=int,
+                               help='- Switch number(s) in stack, range from 1 to 8')
 parser_particular.add_argument('-tE', '--texpectedstate',
                                dest='texpectedstate',
-                               choices=range(1, 12),
+                               choices=range(1, 11),
                                action='extend',
                                nargs='+',
-                               type=int
-                               )
+                               type=int,
+                               help='- Expected status of the switch number(s) accordingly, from 1 to 12')
 #parser.add_argument('--cmd', dest='cmd', help="Command to run")
 #parser.add_argument('--ipfile', dest='ipfile', help="Command to get files with IPs")
 #parser.add_argument('--host', dest='host', default='localhost', help='Host to connect to')
@@ -164,7 +175,7 @@ parser_particular.add_argument('-tE', '--texpectedstate',
 def parse_args():
     options = dict([
         ('remote_ip', None),
-        ('community', 'Public')
+        ('community', 'Public'),
     ])
     try:
         opts, args = getopt.getopt(sys.argv[1:], "hvH:c:d", ["help", "host=", "version", "community=", "debug"])
@@ -372,6 +383,23 @@ def evaluate_results(stack, ring):
     message = ''.join(message)
     return result, message
 
+###############################################################
+#
+# get_part_status() - get_part_status function
+#
+###############################################################
+def get_part_status(switchnumbers, expectedstate):
+
+    return 0
+
+###############################################################
+#
+# get_part_status() - get_part_status function
+#
+###############################################################
+def get_part_status_test(switchnumbers, expectedstate, tswitchnumbers, texpectedstate):
+
+    return 0
 
 ###############################################################
 #
@@ -381,11 +409,19 @@ def evaluate_results(stack, ring):
 def main():
     #print("test")
     args = parser.parse_args()
-    #options = parse_args()
-    #stack = get_stack_info(options['remote_ip'], options['community'])
-    #ring = get_ring_status(options['remote_ip'], options['community'])
-    #result, message = evaluate_results(stack, ring)
-    #plugin_exit(result, message)
+    options = parse_args()
+    if args.part:
+        if args.test:
+            part_result = get_part_status_test(args.switchnumbers, args.expectedstate,
+                                               args.tswitchnumbers, args.texpectedstate)
+        else:
+            part_result = get_part_status(args.switchnumbers, args.expectedstate)
+    else:
+        stack = get_stack_info(args.host, args.community)
+        ring = get_ring_status(args.host, args.community)
+
+    result, message = evaluate_results(stack, ring)
+    plugin_exit(result, message)
     print(args)
 
 
