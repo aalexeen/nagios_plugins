@@ -128,7 +128,8 @@ parser.add_argument("-v", "--version", action="store_true")
 
 subparser_particular = parser.add_subparsers(title='switch subcommands',
                                    description='particular switch number subcommands',
-                                   help='part --help for more details')
+                                   help='part --help for more details',
+                                   dest='subparser_name')
 parser_particular = subparser_particular.add_parser('part', aliases=['particular', 'partial'])
 parser_particular.add_argument('-S', '--switchnumbers',
                                dest='switchnumbers',
@@ -398,7 +399,10 @@ def get_part_status(switchnumbers, expectedstate):
 #
 ###############################################################
 def get_part_status_test(switchnumbers, expectedstate, tswitchnumbers, texpectedstate):
-
+    print("switchnumbers " + ' '.join(str(x) for x in switchnumbers))
+    print("expectedstate " + ' '.join(str(x) for x in expectedstate))
+    print("tswitchnumbers " + ' '.join(str(x) for x in tswitchnumbers))
+    print("texpectedstate " + ' '.join(str(x) for x in texpectedstate))
     return 0
 
 ###############################################################
@@ -410,7 +414,7 @@ def main():
     #print("test")
     args = parser.parse_args()
     options = parse_args()
-    if args.part:
+    if args.subparser_name == 'part':
         if args.test:
             part_result = get_part_status_test(args.switchnumbers, args.expectedstate,
                                                args.tswitchnumbers, args.texpectedstate)
