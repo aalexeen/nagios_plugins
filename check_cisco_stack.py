@@ -60,6 +60,8 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
 # ###############################################################
+import collections
+
 from easysnmp import Session  # Requires easysnmp compiled with python bindings
 import sys       # exit
 import getopt    # for parsing options
@@ -403,6 +405,27 @@ def get_part_status_test(switchnumbers, expectedstate, tswitchnumbers, texpected
     print("expectedstate " + ' '.join(str(x) for x in expectedstate))
     print("tswitchnumbers " + ' '.join(str(x) for x in tswitchnumbers))
     print("texpectedstate " + ' '.join(str(x) for x in texpectedstate))
+    if (switchnumbers == tswitchnumbers):
+        print("1st is equal")
+    else:
+        print("1st is not equal")
+
+    if (expectedstate == texpectedstate):
+        print("2nd is equal")
+    else:
+        print("2nd is not equal")
+
+    switeches_dict = dict(zip(switchnumbers, expectedstate))
+    print(str(switeches_dict))
+
+    tswiteches_dict = dict(zip(tswitchnumbers, texpectedstate))
+    print(str(tswiteches_dict))
+
+    if (switeches_dict == tswiteches_dict):
+        print("The dicts are equal")
+    else:
+        print("The dicts are not equal")
+
     return 0
 
 ###############################################################
